@@ -32,17 +32,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
-      - name: Build status service with Gradle Wrapper
-        run: status-service/gradlew build
-
       - name: Build receiver service with Gradle Wrapper
-        run: receiver-service/gradlew build
+        run: ./gradlew build
 
       - name: Build docker receiver service
-        run: docker build receiver-service/ --file Dockerfile --tag receiver-service:latest
+        run: docker build . --file Dockerfile --tag receiver-service:latest
 
       - name: Build docker status service
-        run: docker build status-service/ --file Dockerfile --tag status-service:latest
+        run: docker build . --file Dockerfile --tag status-service:latest
 
       - name: Login to dockerhub
         uses: docker/login-action@v3.0.0
@@ -53,31 +50,3 @@ jobs:
       - name: Push receiver service to dockerhub
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/delivery-service:latest
-
-      - name: Login to YC registry
-        uses: docker/login-action@v3.0.0
-        with:
-          registry: cr.yandex
-          username: json_key
-          password: ${{ secrets.YC_RSA_JSON }}
-
-      - name: Push status service to YC registry
-        run: |
-          docker push cr.yandex/${{ secrets.YC_REGISTRY_ID }}/status-service:latest
-
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: [ build ]
-    steps:
-      - name: Deploy serverless container
-        uses: yc-actions/yc-sls-container-deploy@v1
-        with:
-          yc-sa-json-credentials: ${{ secrets.YC_KEYS }}
-          container-name: ${{ secrets.YC_CONTAINER_NAME }}
-          folder-id: ${{ secrets.YC_FOLDER_ID }}
-          revision-image-url: cr.yandex/${{ secrets.YC_REGISTRY_ID }}/status-service:latest
-          revision-service-account-id: ${{ secrets.YC_SA_ID }}
-          revision-env: |
-            AMQP_URL=${{ secrets.ENV_AMQP_URL }}
-            POSTGRES_URL=${{ secrets.ENV_POSTGRES_URL }}
