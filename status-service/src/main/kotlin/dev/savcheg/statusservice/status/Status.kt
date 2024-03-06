@@ -1,4 +1,4 @@
-package dev.savcheg.statusservice
+package dev.savcheg.statusservice.status
 
 enum class Status(val value: String) {
     CREATED("Created"),

@@ -1,25 +1,24 @@
-package dev.savcheg.statusservice
+package dev.savcheg.statusservice.order
 
+import dev.savcheg.statusservice.status.Status
 import kotlinx.coroutines.*
 import org.springframework.stereotype.Service
 import java.util.*
-import kotlin.jvm.optionals.getOrDefault
-import kotlin.jvm.optionals.getOrElse
 
 @Service
 class OrderService(val orderRepository: OrderRepository) {
     val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + Job())
 
     fun getAllOrders(): List<OrderDto> =
-            orderRepository.findAll().map { OrderDto(it) }.toList()
+        orderRepository.findAll().map { OrderDto(it) }.toList()
 
     fun createOrder(orderDto: OrderDto): Order {
         val save = orderRepository.save(
-                Order(
-                        restaurantName = orderDto.restaurantName,
-                        items = orderDto.items,
-                        status = Status.CREATED
-                )
+            Order(
+                restaurantName = orderDto.restaurantName,
+                items = orderDto.items,
+                status = Status.CREATED
+            )
         )
         launchTimer(save)
         return save
@@ -37,5 +36,5 @@ class OrderService(val orderRepository: OrderRepository) {
     }
 
     fun getStatusById(id: String): String =
-            orderRepository.findById(UUID.fromString(id)).get().status.value
+        orderRepository.findById(UUID.fromString(id)).get().status.value
 }

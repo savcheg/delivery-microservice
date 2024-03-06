@@ -1,4 +1,4 @@
-package dev.savcheg.statusservice
+package dev.savcheg.statusservice.order
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
