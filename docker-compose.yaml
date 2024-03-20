@@ -1,11 +1,13 @@
 services:
-  rabbitmq:
-    image: rabbitmq:management
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    container_name: keycloak
     environment:
-      debug: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
     ports:
-      - "5672:5672"
-      - "15672:15672"
+        - "8080:8080"
   status-service:
     image: status-service
     build:
@@ -14,6 +16,8 @@ services:
     ports:
       - "8082:8082"
   receiver-service:
+    depends_on:
+      - keycloak
     image: receiver-service
     build:
       context: receiver-service
