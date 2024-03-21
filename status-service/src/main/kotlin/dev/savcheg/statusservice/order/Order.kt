@@ -1,5 +1,6 @@
-package dev.savcheg.statusservice
+package dev.savcheg.statusservice.order
 
+import dev.savcheg.statusservice.status.Status
 import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
