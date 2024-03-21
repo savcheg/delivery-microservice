@@ -1,16 +1,38 @@
 server:
   port: 8081
 spring:
+  mvc:
+    log-request-details: true
   application:
     name: receiver-service
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/receive-rest
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+#          issuer-uri: http://keycloak:8080/realms/receive-rest
+          jwk-set-uri: http://keycloak:8080/realms/receive-rest/protocol/openid-connect/certs
 jwt:
   auth:
     converter:
-      principal-attribute: username
-      resource-id: receiver-rest-api
+      principal-attribute: user
+      resource-id: receive-rest-api
+
+management:
+  zipkin:
+    tracing:
+      endpoint: "http://zipkin:9411/api/v2/spans"
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+
+logging:
+  level:
+    root: debug
+    web: debug

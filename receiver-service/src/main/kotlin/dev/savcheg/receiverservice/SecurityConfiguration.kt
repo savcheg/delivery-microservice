@@ -15,6 +15,8 @@ class SecurityConfiguration(private val converter: JwtAuthConverter) {
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .authorizeHttpRequests {
+                it.requestMatchers("/").permitAll()
+                it.requestMatchers("/actuator/**").permitAll()
                 it.anyRequest().authenticated()
             }
         http.oauth2ResourceServer {

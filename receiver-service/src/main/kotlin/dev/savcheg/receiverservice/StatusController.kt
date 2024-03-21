@@ -24,7 +24,7 @@ class StatusController {
 
     @PostMapping("/new_order")
     @ResponseBody
-    @PreAuthorize("hasRole('client_admin')")
+//    @PreAuthorize("hasRole('client_admin')")
     fun newOrder(@RequestBody order: Order): String {
         val request = HttpRequest.newBuilder()
                 .uri(URI("http://status-service:8082/orders/new"))
@@ -41,7 +41,7 @@ class StatusController {
 
     @GetMapping("/get_status")
     @ResponseBody
-    @PreAuthorize("hasRole('client_admin')")
+//    @PreAuthorize("hasRole('client_admin')")
     fun getStatusById(@RequestParam id: String): String {
         val request = HttpRequest.newBuilder()
                 .uri(URI("http://status-service:8082/orders/$id"))
